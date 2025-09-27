@@ -208,14 +208,21 @@ std::string angleFilename(int angle) {
     return std::string(buf);
 }
 
-GLuint getTextureForAngle(int angle) {
+GLuint getTextureForAngle(int angle,bool isrigth) {
     int idx = wrapIndex(angle);
-    if (texture_cache.count(idx)) return texture_cache[idx];
+    //if (texture_cache.count(idx)) return texture_cache[idx];
 
-    std::string path = angleFilename(idx);
-    GLuint tex = loadTextureFromFile(path);
+    //std::string path = angleFilename(idx);
+    //GLuint tex = loadTextureFromFile(path);
+    GLuint tex = 0;
     if (tex == 0) {
-        tex = generatePlaceholderTexture(0.2f, 0.2f, 0.2f); // fallback gray
+        if (isrigth) {
+            tex = generatePlaceholderTexture(0.f, 0.f, 0.f); // fallback gray
+        }
+        else{
+            tex = generatePlaceholderTexture(1.f, 1.f, 1.f); // fallback gray
+        }
+
     }
     texture_cache[idx] = tex;
     return tex;
@@ -327,7 +334,7 @@ void update_and_swap(GLFWwindow* window,int dir, int FoV){
     //std::cout << rightIndex << " " << leftIndex << " " << dir << std::endl;
     //std::cout.flush();
 
-    GLuint tex = show_left_eye ? getTextureForAngle(leftIndex) : getTextureForAngle(rightIndex);
+    GLuint tex = show_left_eye ? getTextureForAngle(leftIndex,true) : getTextureForAngle(rightIndex,false);
     
     //std::cout<<leftIndex<<" "<rightIndex<<std::endl;
     //std::cout.flush();
